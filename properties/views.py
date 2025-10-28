@@ -1,23 +1,35 @@
 """Custom Views"""
 
-from django.views.generic import ListView
-from django.core.cache import cache
+from django.views.decorators.cache import cache_page
+from django.http import JsonResponse
 from .models import Property
 
+
 # pylint: disable=no-member
-class PropertyListView(ListView):
-    """Property List view"""
+# pylint: disable=unused-argument
+@cache_page(60 * 15)  # Cache for 15 minutes (900 seconds)
+def property_list(request):
+    """
+    Returns a list of all properties in JSON format.
+    Response is cached in Redis for 15 minutes.
+    """
+    properties = Property.objects.all().values(
+        "id",
+        "title",
+        "description",
+        "price",
+        "location",
+        "created_at",
+    )
 
-    model = Property
-    template_name = "properties/property_list.html"
-    context_object_name = "properties"
+    # Convert queryset to list for JSON serialization
+    properties_list = list(properties)
 
-    def get_queryset(self):
-        # Use cache
-        cached_properties = cache.get("all_properties")
-        if cached_properties is not None:
-            return cached_properties
-
-        qs = Property.objects.all()
-        cache.set("all_properties", qs, timeout=60 * 15)  # 15 minutes
-        return qs
+    return JsonResponse(
+        {
+            "status": "success",
+            "count": len(properties_list),
+            "data": properties_list,
+        },
+        safe=False,
+    )
