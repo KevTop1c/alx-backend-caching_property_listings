@@ -25,10 +25,8 @@ def property_list(request):
     # Convert queryset to list for JSON serialization
     properties_list = list(properties)
 
-    return JsonResponse(
-        {
+    return JsonResponse({
             "status": "success",
             "count": len(properties_list),
             "data": properties_list,
-        },
-    )
+    })
