@@ -3,6 +3,7 @@
 from django.views.decorators.cache import cache_page
 from django.http import JsonResponse
 from .models import Property
+from .utils import get_all_properties
 
 
 # pylint: disable=no-member
@@ -22,11 +23,12 @@ def property_list(request):
         "created_at",
     )
 
-    # Convert queryset to list for JSON serialization
-    properties_list = list(properties)
+    # Get properties using the cached utility function
+    properties = get_all_properties()
 
     return JsonResponse({
             "status": "success",
-            "count": len(properties_list),
-            "data": properties_list,
-    })
+            "count": len(properties),
+            "data": properties,
+            "cache_info": "Data cached in Redis for 1 hour via get_all_properties()",
+    }, safe=False)
