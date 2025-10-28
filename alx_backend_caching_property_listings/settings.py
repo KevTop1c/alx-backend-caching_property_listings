@@ -82,7 +82,7 @@ DATABASES = {
         "USER": "property_user",
         "PASSWORD": "postgres123",
         "HOST": "localhost",  # Service name from docker-compose
-        "PORT": "5433",
+        "PORT": "5433", # 5432
     }
 }
 
