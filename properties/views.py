@@ -31,5 +31,4 @@ def property_list(request):
             "count": len(properties_list),
             "data": properties_list,
         },
-        safe=False,
     )
