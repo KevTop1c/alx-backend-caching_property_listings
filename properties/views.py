@@ -26,15 +26,12 @@ def property_list(request):
     # Get properties using the cached utility function
     properties = get_all_properties()
 
-    return JsonResponse(
-        {
+    return JsonResponse({
             "status": "success",
             "count": len(properties),
             "data": properties,
             "cache_info": "Data cached in Redis for 1 hour via get_all_properties()",
-        },
-        safe=False,
-    )
+    })
 
 
 def cache_metrics(request):
